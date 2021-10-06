@@ -3,7 +3,19 @@ import 'dart:math'; //Dart core library
 import 'calculator.dart';
 import 'class.dart';
 
-void main(){
+
+  //Stream
+  var oneSecond = Duration(seconds : 1);
+  Stream<String> report(Spacecraft craft, Iterable<String> objects) async*{
+    for(var object in objects){
+      await Future.delayed(oneSecond);
+      yield '${craft.name} fields by $object';
+    }
+  }
+  //async* 키워드를 통해서 stream 함수를 선언할 수 있고
+  //return 대신에 yield 키워드를 통해 반환한다
+
+void main() async{ //stream 때문에 async 붙임
   //데이터 타입
   // bool === boolean
   bool visible = true; //값을 주지 않으면 null로 세팅
@@ -139,6 +151,22 @@ void main(){
 
   Unit unit = Unit();
   unit.describeWithEmphasis();
+
+  Spacecraft craft = Spacecraft('spacecraft', DateTime.now());
+  Stream<String> r = report(craft, ['ABC','DEF','EFG']);
+  //저 r을 꺼내는 방법은 두가지다
+  //1.
+  //await for(String s in r){
+  //  print(s);
+  //}
+  //2.
+  r.listen((event) {
+    print(event);
+   });
+
+   print('코드 종료');
+  
+
 
 }
 

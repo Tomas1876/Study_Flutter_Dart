@@ -48,4 +48,5 @@ void main() async{
   //Future가 자바스크립트의 Promise에 대응한다고 생각하면 쉬울 것
   int result = await printWithDelay('출력');
   print(result);
+  
 }
