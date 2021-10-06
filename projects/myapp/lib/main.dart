@@ -4,6 +4,8 @@ void main() {
   runApp(const MyApp());
 }
 
+//StatelessWidget은 성능이 좋은 대신 기능이 별로 없다
+//반면 StatefullWidget은 무거운만큼 기능들이 많다
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
