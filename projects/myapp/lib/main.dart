@@ -9,15 +9,21 @@ void main() {
 class RandomWordsSatae extends State<RandomWords> {
   final _suggestions = <WordPair>[]; //<WordPair> 타입만 담는 배열
   final _biggerFont = const TextStyle(fontSize: 18.0); // flutter에서는 픽셀 사용 x
+  final Set<WordPair> _saved = Set<WordPair>();
   //_가 붙은건 이 파일 안에서만 접근 가능하다는 뜻
   //내부에서만 쓸 변수들은 이런 식으로 작명하는 것이 좋다
 
   Widget _buildRow(WordPair pair) {
-    return ListTile(
+    final bool alreadySaved = _saved.contains(pair);
+    return ListTile( // ListView는 ListTile들로 구성된다
       title: Text(
         pair.asPascalCase, //파스칼표기법으로 바꿔주기
         style: _biggerFont,
       ),
+      trailing:Icon( //trailing은 타일 뒤에 표시되는 위젯 앞에 표시되는 건 leading
+        alreadySaved ? Icons.favorite : Icons.favorite_border,
+        color: alreadySaved ? Colors.red : null
+      )
     );
   }
 
