@@ -23,7 +23,16 @@ class RandomWordsSatae extends State<RandomWords> {
       trailing:Icon( //trailing은 타일 뒤에 표시되는 위젯 앞에 표시되는 건 leading
         alreadySaved ? Icons.favorite : Icons.favorite_border,
         color: alreadySaved ? Colors.red : null
-      )
+      ),
+      onTap: (){
+        setState(() { //하트의 상태를 관리해서 화면에 그려준다
+          if(alreadySaved){
+              _saved.remove(pair);
+          } else{
+            _saved.add(pair);
+          }
+        });
+      }
     );
   }
 
