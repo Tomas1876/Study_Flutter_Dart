@@ -1,7 +1,64 @@
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
+}
+
+//StatefulWidget을 사용할 때는 이렇게 두 가지 클래스를 정의해야 한다
+class RandomWordsSatae extends State<RandomWords> {
+  final _suggestions = <WordPair>[]; //<WordPair> 타입만 담는 배열
+  final _biggerFont = const TextStyle(fontSize: 18.0); // flutter에서는 픽셀 사용 x
+  //_가 붙은건 이 파일 안에서만 접근 가능하다는 뜻
+  //내부에서만 쓸 변수들은 이런 식으로 작명하는 것이 좋다
+
+  Widget _buildRow(WordPair pair) {
+    return ListTile(
+      title: Text(
+        pair.asPascalCase, //파스칼표기법으로 바꿔주기
+        style: _biggerFont,
+      ),
+    );
+  }
+
+  //상태가 계속 바뀌는 것은 class가 아니라 state 안에서 작업하기
+  @override
+  Widget build(BuildContext context) {
+    //final wordpair = WordPair.random();
+    //return Text(wordpair.asPascalCase);
+    return Scaffold(
+      appBar: AppBar(title: Text('Startup Name Generator')),
+      body: _buildSuggestions(),
+    );
+  }
+
+  @override
+  Widget _buildSuggestions() {
+    //ListView
+    return ListView.builder(
+        //builder라는 이름의 ListView 생성자
+        padding: const EdgeInsets.all(16.0),
+        //itemBuilder는 리스트에 그려질 항목을 lazy하게,
+        //해당 child가 화면에 보여져야 할 때 생성한다
+        //많은 아이템을 보여주어야 할 때 사용한다
+        itemBuilder: (context, i) {
+          if (i.isOdd) return Divider();
+          //Divider라는 위젯은 리스트와 리스트 사이의 구분선을 만들어준다
+
+          final index = i ~/ 2;
+          if (index >= _suggestions.length) {
+            //addAll === list에 다수의 요소 추가하기
+            _suggestions.addAll(
+                generateWordPairs().take(10)); //10개씩 새 단어를 생성해서 몽땅 추가해준다
+          }
+          return _buildRow(_suggestions[index]);
+        });
+  }
+}
+
+class RandomWords extends StatefulWidget {
+  @override
+  RandomWordsSatae createState() => RandomWordsSatae();
 }
 
 //StatelessWidget은 성능이 좋은 대신 기능이 별로 없다
@@ -12,106 +69,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
-        primarySwatch: Colors.blue,
-      ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+    //final wordPair = WordPair.random();
+    return MaterialApp(title: 'Welcome to Flutter', home: RandomWords());
   }
 }
