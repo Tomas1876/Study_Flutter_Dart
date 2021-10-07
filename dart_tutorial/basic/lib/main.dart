@@ -165,6 +165,8 @@ void main() async{ //stream 때문에 async 붙임
    });
 
    print('코드 종료');
+
+   
   
 
 
